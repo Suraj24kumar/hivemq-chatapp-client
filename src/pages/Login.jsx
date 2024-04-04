@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import api from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -7,9 +7,15 @@ export default function Login() {
   const [emailOrUsername, setEmailOrUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { state } = useLocation();
+
+  useEffect(() => {
+    if (state?.message) setSuccess(state.message);
+  }, [state?.message]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,6 +38,11 @@ export default function Login() {
         <div className="bg-gray-100 rounded-2xl shadow-xl border border-gray-200 p-4 sm:p-6 lg:p-8">
           <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 text-center mb-6">Sign in</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
+            {success && (
+              <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 text-sm rounded-lg px-3 py-2">
+                {success}
+              </div>
+            )}
             {error && (
               <div className="bg-red-500/10 border border-red-500/30 text-red-600 text-sm rounded-lg px-3 py-2">
                 {error}
