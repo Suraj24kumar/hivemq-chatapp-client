@@ -4,8 +4,11 @@ import mqtt from 'mqtt';
 import api from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import Avatar from '../components/Avatar';
+import GroupList from '../components/chat/GroupList';
 import MessageList from '../components/chat/MessageList';
 import MessageInput from '../components/chat/MessageInput';
+import NewGroupModal from '../components/chat/NewGroupModal';
+import NewChatModal from '../components/chat/NewChatModal';
 
 export default function Chat() {
   const { groupId } = useParams();
@@ -15,6 +18,8 @@ export default function Chat() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mqttClient, setMqttClient] = useState(null);
+  const [newGroupOpen, setNewGroupOpen] = useState(false);
+  const [newChatOpen, setNewChatOpen] = useState(false);
   const mqttRef = useRef(null);
   const currentGroupIdRef = useRef(groupId);
 
@@ -147,6 +152,39 @@ export default function Chat() {
     }
   };
 
+  const handleNewGroup = () => setNewGroupOpen(true);
+  const handleGroupCreated = (group) => {
+    setGroups((prev) => [group, ...prev]);
+    setNewGroupOpen(false);
+    navigate(`/chat/${group._id}`);
+    if (mqttRef.current?.connected) {
+      mqttRef.current.subscribe(`chat/group/${group._id}`);
+    }
+  };
+  const handleNewChatStart = (group) => {
+    setGroups((prev) => [group, ...prev]);
+    setNewChatOpen(false);
+    navigate(`/chat/${group._id}`);
+    if (mqttRef.current?.connected) {
+      mqttRef.current.subscribe(`chat/group/${group._id}`);
+    }
+  };
+  const handleOpenSaved = async () => {
+    try {
+      const { data } = await api.get('/groups/self');
+      setGroups((prev) => {
+        if (prev.some((g) => g._id === data._id)) return prev;
+        return [data, ...prev];
+      });
+      navigate(`/chat/${data._id}`);
+      if (mqttRef.current?.connected) {
+        mqttRef.current.subscribe(`chat/group/${data._id}`);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="h-screen flex bg-white overflow-hidden">
       <aside
@@ -165,33 +203,48 @@ export default function Chat() {
             Logout
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto p-2">
-          <p className="text-xs font-medium text-gray-500 px-2 py-1">Conversations</p>
-          {groups.length === 0 ? (
-            <p className="text-gray-500 text-sm px-2 py-2">No conversations yet.</p>
-          ) : (
-            <ul className="space-y-0.5">
-              {groups.map((g) => {
-                const name = g.isSelf ? 'Saved' : g.isDirect && g.memberIds?.length === 2
-                  ? (g.memberIds.find((m) => (m._id || m).toString() !== user?._id)?.username || 'Chat')
-                  : g.name;
-                return (
-                  <li key={g._id}>
-                    <button
-                      type="button"
-                      onClick={() => navigate(`/chat/${g._id}`)}
-                      className={`w-full text-left px-3 py-2.5 rounded-lg flex items-center gap-2 ${
-                        groupId === g._id ? 'bg-gray-300' : 'hover:bg-gray-200'
-                      }`}
-                    >
-                      <Avatar src={g.profilePic} name={name} className="w-8 h-8 rounded-full flex-shrink-0" />
-                      <span className="truncate text-gray-900">{name}</span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+        <div className="flex-1 overflow-y-auto">
+          <div className="p-2 flex flex-row gap-2">
+            <button
+              type="button"
+              onClick={handleOpenSaved}
+              title="Saved"
+              className="flex-1 min-h-[44px] py-2 px-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-medium border border-gray-300 flex items-center justify-center gap-1.5"
+            >
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+              </svg>
+              <span className="truncate">Saved</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setNewChatOpen(true)}
+              title="New chat"
+              className="flex-1 min-h-[44px] py-2 px-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-medium border border-gray-300 flex items-center justify-center gap-1.5"
+            >
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              <span className="truncate">Chat</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleNewGroup}
+              title="New group"
+              className="flex-1 min-h-[44px] py-2 px-2 rounded-lg bg-black text-white hover:bg-gray-800 text-xs font-medium flex items-center justify-center gap-1.5"
+            >
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <span className="truncate">Group</span>
+            </button>
+          </div>
+          <GroupList
+            groups={groups}
+            currentId={groupId}
+            currentUserId={user?._id}
+            onSelect={(id) => navigate(`/chat/${id}`)}
+          />
         </div>
       </aside>
       <main className={`flex-1 flex flex-col min-w-0 min-h-0 ${!groupId ? 'hidden lg:flex' : 'flex'}`}>
@@ -228,11 +281,39 @@ export default function Chat() {
             {loading ? (
               <p className="text-gray-500">Loading...</p>
             ) : (
-              <p className="text-gray-500 text-center">Select a conversation or create one from the sidebar.</p>
+              <>
+                <p className="text-gray-500 text-center">Select a conversation or start a new one.</p>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  <button
+                    type="button"
+                    onClick={() => setNewChatOpen(true)}
+                    className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium border border-gray-300"
+                  >
+                    New chat
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNewGroup}
+                    className="px-4 py-2 rounded-lg bg-black text-white hover:bg-gray-800 text-sm font-medium"
+                  >
+                    New group
+                  </button>
+                </div>
+              </>
             )}
           </div>
         )}
       </main>
+      <NewGroupModal
+        open={newGroupOpen}
+        onClose={() => setNewGroupOpen(false)}
+        onCreated={handleGroupCreated}
+      />
+      <NewChatModal
+        open={newChatOpen}
+        onClose={() => setNewChatOpen(false)}
+        onStartChat={handleNewChatStart}
+      />
     </div>
   );
 }
