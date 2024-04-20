@@ -7,6 +7,7 @@ import Avatar from '../components/Avatar';
 import GroupList from '../components/chat/GroupList';
 import MessageList from '../components/chat/MessageList';
 import MessageInput from '../components/chat/MessageInput';
+import ThemeToggle from '../components/ThemeToggle';
 import NewGroupModal from '../components/chat/NewGroupModal';
 import NewChatModal from '../components/chat/NewChatModal';
 
@@ -186,16 +187,17 @@ export default function Chat() {
   };
 
   return (
-    <div className="h-screen flex bg-white overflow-hidden">
+    <div className="h-screen flex bg-white dark:bg-black overflow-hidden">
       <aside
-        className={`w-full lg:w-72 flex-shrink-0 bg-gray-100 border-r border-gray-200 flex flex-col ${groupId ? 'hidden' : 'flex'} lg:flex`}
+        className={`w-full lg:w-72 flex-shrink-0 bg-gray-100 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col ${groupId ? 'hidden' : 'flex'} lg:flex`}
       >
-        <div className="p-3 lg:p-4 border-b border-gray-200 flex items-center gap-3">
+        <div className="p-3 lg:p-4 border-b border-gray-200 dark:border-gray-700 flex items-center gap-3">
           <Avatar src={user?.profilePic} name={user?.username} className="w-10 h-10 rounded-full flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-gray-900 font-medium truncate">{user?.username}</p>
-            <p className="text-gray-500 text-sm truncate hidden sm:block">{user?.email}</p>
+            <p className="text-gray-900 dark:text-white font-medium truncate">{user?.username}</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm truncate hidden sm:block">{user?.email}</p>
           </div>
+          <ThemeToggle className="flex-shrink-0" />
           <button
             onClick={logout}
             className="text-gray-500 hover:text-gray-900 text-sm px-2 py-1 rounded"
