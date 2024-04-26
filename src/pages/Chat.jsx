@@ -10,6 +10,9 @@ import MessageInput from '../components/chat/MessageInput';
 import ThemeToggle from '../components/ThemeToggle';
 import NewGroupModal from '../components/chat/NewGroupModal';
 import NewChatModal from '../components/chat/NewChatModal';
+import ProfilePicModal from '../components/chat/ProfilePicModal';
+import GroupProfilePicModal from '../components/chat/GroupProfilePicModal';
+import EditGroupModal from '../components/chat/EditGroupModal';
 
 export default function Chat() {
   const { groupId } = useParams();
@@ -21,6 +24,9 @@ export default function Chat() {
   const [mqttClient, setMqttClient] = useState(null);
   const [newGroupOpen, setNewGroupOpen] = useState(false);
   const [newChatOpen, setNewChatOpen] = useState(false);
+  const [editGroupOpen, setEditGroupOpen] = useState(false);
+  const [profilePicOpen, setProfilePicOpen] = useState(false);
+  const [groupPicOpen, setGroupPicOpen] = useState(false);
   const mqttRef = useRef(null);
   const currentGroupIdRef = useRef(groupId);
 
@@ -186,13 +192,32 @@ export default function Chat() {
     }
   };
 
+  const handleGroupPicUpdated = (updated) => {
+    setGroups((prev) => prev.map((g) => (g._id === updated._id ? updated : g)));
+    setGroupPicOpen(false);
+  };
+  const handleEditGroupUpdated = (updated) => {
+    setGroups((prev) => prev.map((g) => (g._id === updated._id ? updated : g)));
+    setEditGroupOpen(false);
+  };
+  const handleEditGroupLeft = () => {
+    navigate('/chat');
+    loadGroups();
+  };
+
   return (
     <div className="h-screen flex bg-white dark:bg-black overflow-hidden">
       <aside
         className={`w-full lg:w-72 flex-shrink-0 bg-gray-100 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col ${groupId ? 'hidden' : 'flex'} lg:flex`}
       >
         <div className="p-3 lg:p-4 border-b border-gray-200 dark:border-gray-700 flex items-center gap-3">
-          <Avatar src={user?.profilePic} name={user?.username} className="w-10 h-10 rounded-full flex-shrink-0" />
+          <button
+            type="button"
+            onClick={() => setProfilePicOpen(true)}
+            className="flex-shrink-0 rounded-full focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900"
+          >
+            <Avatar src={user?.profilePic} name={user?.username} className="w-10 h-10 rounded-full" />
+          </button>
           <div className="flex-1 min-w-0">
             <p className="text-gray-900 dark:text-white font-medium truncate">{user?.username}</p>
             <p className="text-gray-500 dark:text-gray-400 text-sm truncate hidden sm:block">{user?.email}</p>
@@ -200,7 +225,7 @@ export default function Chat() {
           <ThemeToggle className="flex-shrink-0" />
           <button
             onClick={logout}
-            className="text-gray-500 hover:text-gray-900 text-sm px-2 py-1 rounded"
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm px-2 py-1 rounded"
           >
             Logout
           </button>
@@ -252,23 +277,42 @@ export default function Chat() {
       <main className={`flex-1 flex flex-col min-w-0 min-h-0 ${!groupId ? 'hidden lg:flex' : 'flex'}`}>
         {groupId ? (
           <>
-            <header className="h-14 px-3 sm:px-4 border-b border-gray-200 flex items-center gap-2 sm:gap-3 bg-gray-100/80 flex-shrink-0">
+            <header className="h-14 px-3 sm:px-4 border-b border-gray-200 dark:border-gray-700 flex items-center gap-2 sm:gap-3 bg-gray-100/80 dark:bg-gray-900/50 flex-shrink-0">
               <button
                 type="button"
                 onClick={() => navigate('/chat')}
-                className="lg:hidden flex-shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center -ml-1 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-200"
+                className="lg:hidden flex-shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center -ml-1 rounded-lg text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800"
                 aria-label="Back to conversations"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
-              <Avatar
-                src={currentGroupDisplay.pic}
-                name={currentGroupDisplay.name}
-                className="w-9 h-9 rounded-full flex-shrink-0"
-              />
-              <span className="text-gray-900 font-medium truncate flex-1">{currentGroupDisplay.name}</span>
+              <button
+                type="button"
+                onClick={() => setGroupPicOpen(true)}
+                className="flex-shrink-0 rounded-full focus:ring-2 focus:ring-gray-500"
+                aria-label="Group picture"
+              >
+                <Avatar
+                  src={currentGroupDisplay.pic}
+                  name={currentGroupDisplay.name}
+                  className="w-9 h-9 rounded-full"
+                />
+              </button>
+              <button
+                type="button"
+                onClick={() => setEditGroupOpen(true)}
+                className="flex-1 min-w-0 flex items-center gap-2 py-2 px-2 -mx-2 rounded-lg cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors text-left focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-inset"
+                aria-label="Group info and settings"
+                title="Group info and settings"
+              >
+                <span className="text-gray-900 dark:text-white font-medium truncate flex-1">{currentGroupDisplay.name}</span>
+                <svg className="w-5 h-5 flex-shrink-0 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </button>
             </header>
             <MessageList
               messages={messages}
@@ -315,6 +359,21 @@ export default function Chat() {
         open={newChatOpen}
         onClose={() => setNewChatOpen(false)}
         onStartChat={handleNewChatStart}
+      />
+      <ProfilePicModal open={profilePicOpen} onClose={() => setProfilePicOpen(false)} />
+      <GroupProfilePicModal
+        open={groupPicOpen}
+        onClose={() => setGroupPicOpen(false)}
+        group={currentGroup}
+        onUpdated={handleGroupPicUpdated}
+      />
+      <EditGroupModal
+        open={editGroupOpen}
+        onClose={() => setEditGroupOpen(false)}
+        group={currentGroup}
+        currentUserId={user?._id}
+        onUpdated={handleEditGroupUpdated}
+        onLeft={handleEditGroupLeft}
       />
     </div>
   );
