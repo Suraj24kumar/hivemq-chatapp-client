@@ -60,7 +60,7 @@ export default function MessageList({ messages, currentUserId, onEditMessage, on
   const [editDraft, setEditDraft] = useState('');
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [messages]);
 
   const startEditing = (msg) => {
