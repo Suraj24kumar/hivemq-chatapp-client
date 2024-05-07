@@ -35,8 +35,9 @@ export default function GroupList({ groups, currentId, currentUserId, onSelect }
           <li key={g._id}>
             <button
               onClick={() => onSelect(g._id)}
+              aria-current={currentId === g._id ? 'true' : undefined}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${
-                currentId === g._id ? 'bg-gray-300 text-gray-900' : 'text-gray-600 hover:bg-gray-200/80'
+                currentId === g._id ? 'bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200/80 dark:hover:bg-gray-700/50'
               }`}
             >
               <Avatar src={pic} name={name} className="w-10 h-10 rounded-full flex-shrink-0" />
