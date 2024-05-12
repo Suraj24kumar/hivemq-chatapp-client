@@ -12,7 +12,7 @@ export default function Avatar({ src, name, className = 'w-10 h-10 rounded-full'
   }
   return (
     <div
-      className={`flex items-center justify-center bg-gray-400 text-white text-sm font-medium ${className}`}
+      className={`flex items-center justify-center bg-gray-400 dark:bg-gray-600 text-white dark:text-gray-200 text-sm font-medium ${className}`}
     >
       {initials}
     </div>

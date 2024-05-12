@@ -113,8 +113,8 @@ export default function MessageList({ messages, currentUserId, onEditMessage, on
               <div
                 className={`rounded-2xl px-4 py-2 ${
                   isOwn
-                    ? 'bg-black text-white rounded-br-md'
-                    : 'bg-gray-200 text-gray-900 rounded-bl-md'
+                    ? 'bg-black dark:bg-gray-800 text-white rounded-br-md'
+                    : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-bl-md'
                 }`}
               >
                 {isEditing ? (
@@ -122,7 +122,7 @@ export default function MessageList({ messages, currentUserId, onEditMessage, on
                     <textarea
                       value={editDraft}
                       onChange={(e) => setEditDraft(e.target.value)}
-                      className="w-full min-h-[60px] px-2 py-1.5 rounded bg-white/80 border border-gray-300 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-400 resize-y"
+                      className="w-full min-h-[60px] px-2 py-1.5 rounded bg-white/80 dark:bg-black/20 border border-gray-300 dark:border-white/20 text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/60 focus:outline-none focus:ring-1 focus:ring-gray-400 dark:focus:ring-white/40 resize-y"
                       placeholder="Message..."
                       autoFocus
                     />
@@ -130,14 +130,14 @@ export default function MessageList({ messages, currentUserId, onEditMessage, on
                       <button
                         type="button"
                         onClick={cancelEdit}
-                        className="text-xs px-2 py-1 rounded bg-gray-300/80 hover:bg-gray-400/80 text-gray-800"
+                        className="text-xs px-2 py-1 rounded bg-gray-300/80 dark:bg-white/20 hover:bg-gray-400/80 dark:hover:bg-white/30 text-gray-800 dark:text-white"
                       >
                         Cancel
                       </button>
                       <button
                         type="button"
                         onClick={saveEdit}
-                        className="text-xs px-2 py-1 rounded bg-gray-400/80 hover:bg-gray-500/80 font-medium text-gray-900"
+                        className="text-xs px-2 py-1 rounded bg-gray-400/80 dark:bg-white/30 hover:bg-gray-500/80 dark:hover:bg-white/40 font-medium text-gray-900 dark:text-white"
                       >
                         Save
                       </button>
@@ -169,7 +169,7 @@ export default function MessageList({ messages, currentUserId, onEditMessage, on
                                   downloadAttachment(att);
                                 }}
                                 className={`text-sm break-all cursor-pointer bg-transparent border-0 p-0 font-inherit text-left hover:underline ${
-                                  isOwn ? 'text-white hover:text-gray-200' : 'text-gray-700'
+                                  isOwn ? 'text-white dark:text-gray-200 hover:text-gray-200 dark:hover:text-gray-100' : 'text-gray-700 dark:text-gray-300'
                                 }`}
                               >
                                 {attachmentLabel(att)}
@@ -188,7 +188,7 @@ export default function MessageList({ messages, currentUserId, onEditMessage, on
                     <button
                       type="button"
                       onClick={() => startEditing(msg)}
-                      className="text-xs text-gray-500 hover:text-gray-700 px-1"
+                      className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 px-1"
                       title="Edit"
                     >
                       Edit
@@ -196,14 +196,14 @@ export default function MessageList({ messages, currentUserId, onEditMessage, on
                     <button
                       type="button"
                       onClick={() => handleDelete(msg)}
-                      className="text-xs text-gray-500 hover:text-red-500 px-1"
+                      className="text-xs text-gray-500 dark:text-gray-400 hover:text-red-400 px-1"
                       title="Delete"
                     >
                       Delete
                     </button>
                   </span>
                 )}
-                <span className={`text-xs text-gray-500 ${showActions && !isEditing ? (isOwn ? 'mr-2' : 'ml-2') : ''}`}>
+                <span className={`text-xs text-gray-500 dark:text-gray-400 ${showActions && !isEditing ? (isOwn ? 'mr-2' : 'ml-2') : ''}`}>
                   {msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                 </span>
               </div>

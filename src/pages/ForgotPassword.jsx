@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../lib/api';
+import ThemeToggle from '../components/ThemeToggle';
 
 export default function ForgotPassword() {
   const [step, setStep] = useState(1);
@@ -57,32 +58,35 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center p-4 relative">
+      <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-md">
-        <div className="bg-gray-100 rounded-2xl shadow-xl border border-gray-200 p-4 sm:p-6 lg:p-8">
-          <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 text-center mb-6">
+        <div className="bg-gray-100 dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-6 lg:p-8">
+          <h1 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white text-center mb-6">
             {step === 1 ? 'Forgot password' : 'Reset password'}
           </h1>
 
           {step === 1 ? (
             <form onSubmit={handleForgotSubmit} className="space-y-4">
               {error && (
-                <div className="bg-red-500/10 border border-red-500/30 text-red-600 text-sm rounded-lg px-3 py-2">
+                <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-3 py-2">
                   {error}
                 </div>
               )}
               {success && (
-                <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 text-sm rounded-lg px-3 py-2">
+                <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm rounded-lg px-3 py-2">
                   {success}
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Email</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg bg-gray-200 border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                  className="w-full px-4 py-2.5 rounded-lg bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent dark:focus:ring-offset-gray-900"
                   placeholder="you@example.com"
                   required
                 />
@@ -90,7 +94,7 @@ export default function ForgotPassword() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 rounded-lg bg-black text-white hover:bg-gray-800 font-medium focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50"
+                className="w-full py-2.5 rounded-lg bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 font-medium focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-900 disabled:opacity-50"
               >
                 {loading ? 'Sending...' : 'Send reset code'}
               </button>
@@ -98,50 +102,50 @@ export default function ForgotPassword() {
           ) : (
             <form onSubmit={handleResetSubmit} className="space-y-4">
               {error && (
-                <div className="bg-red-500/10 border border-red-500/30 text-red-600 text-sm rounded-lg px-3 py-2">
+                <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-lg px-3 py-2">
                   {error}
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Email</label>
                 <input
                   type="email"
                   value={email}
                   readOnly
-                  className="w-full px-4 py-2.5 rounded-lg bg-gray-200/50 border border-gray-300 text-gray-500 cursor-not-allowed"
+                  className="w-full px-4 py-2.5 rounded-lg bg-gray-200/50 dark:bg-gray-800/50 border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Code</label>
+                <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Code</label>
                 <input
                   type="text"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                  className="w-full px-4 py-2.5 rounded-lg bg-gray-200 border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                  className="w-full px-4 py-2.5 rounded-lg bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent dark:focus:ring-offset-gray-900"
                   placeholder="6-digit code"
                   maxLength={6}
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">New password</label>
+                <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">New password</label>
                 <input
                   type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg bg-gray-200 border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                  className="w-full px-4 py-2.5 rounded-lg bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent dark:focus:ring-offset-gray-900"
                   placeholder="••••••••"
                   minLength={6}
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-600 mb-1">Confirm password</label>
+                <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Confirm password</label>
                 <input
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg bg-gray-200 border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+                  className="w-full px-4 py-2.5 rounded-lg bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent dark:focus:ring-offset-gray-900"
                   placeholder="••••••••"
                   minLength={6}
                   required
@@ -150,15 +154,15 @@ export default function ForgotPassword() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 rounded-lg bg-black text-white hover:bg-gray-800 font-medium focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50"
+                className="w-full py-2.5 rounded-lg bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 font-medium focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-900 disabled:opacity-50"
               >
                 {loading ? 'Updating...' : 'Update password'}
               </button>
             </form>
           )}
 
-          <p className="mt-6 text-center text-gray-500 text-sm">
-            <Link to="/login" className="text-gray-900 hover:underline font-medium">
+          <p className="mt-6 text-center text-gray-500 dark:text-gray-400 text-sm">
+            <Link to="/login" className="text-gray-900 dark:text-gray-300 hover:underline font-medium">
               Back to sign in
             </Link>
           </p>

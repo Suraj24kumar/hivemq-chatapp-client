@@ -154,10 +154,10 @@ export default function MessageInput({ onSend }) {
   const canSend = text.trim() || selectedFiles.length;
 
   return (
-    <div className="p-3 sm:p-4 border-t border-gray-200 bg-gray-100/80 flex-shrink-0">
+    <div className="p-3 sm:p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-100/80 dark:bg-gray-900/50 flex-shrink-0">
       {uploadError && (
-        <p className="text-red-600 text-sm mb-2 flex items-center gap-2">
-          <span className="w-4 h-4 rounded-full bg-red-500/20 flex items-center justify-center text-red-600 text-xs flex-shrink-0">!</span>
+        <p className="text-red-400 text-sm mb-2 flex items-center gap-2">
+          <span className="w-4 h-4 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 text-xs flex-shrink-0">!</span>
           {uploadError}
         </p>
       )}
@@ -166,10 +166,10 @@ export default function MessageInput({ onSend }) {
           {selectedFiles.map((file, i) => (
             <div
               key={`${file.name}-${i}`}
-              className="relative group flex items-center gap-2 rounded-lg bg-gray-200/80 border border-gray-300 overflow-hidden"
+              className="relative group flex items-center gap-2 rounded-lg bg-gray-200/80 dark:bg-gray-700/80 border border-gray-300 dark:border-gray-600 overflow-hidden"
             >
               {getType(file) === 'image' && previewUrls[i] ? (
-                <div className="w-12 h-12 flex-shrink-0 bg-gray-300">
+                <div className="w-12 h-12 flex-shrink-0 bg-gray-300 dark:bg-gray-600">
                   <img
                     src={previewUrls[i]}
                     alt=""
@@ -177,22 +177,22 @@ export default function MessageInput({ onSend }) {
                   />
                 </div>
               ) : (
-                <div className="w-12 h-12 flex-shrink-0 bg-gray-300 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 flex-shrink-0 bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
+                  <svg className="w-6 h-6 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                   </svg>
                 </div>
               )}
               <div className="py-1.5 pr-8 pl-1 min-w-0">
-                <p className="text-gray-800 text-sm font-medium truncate max-w-[140px]" title={file.name}>
+                <p className="text-gray-800 dark:text-gray-200 text-sm font-medium truncate max-w-[140px]" title={file.name}>
                   {file.name}
                 </p>
-                <p className="text-gray-500 text-xs">{formatSize(file.size)}</p>
+                <p className="text-gray-500 dark:text-gray-400 text-xs">{formatSize(file.size)}</p>
               </div>
               <button
                 type="button"
                 onClick={() => removeFile(i)}
-                className="absolute top-1 right-1 w-6 h-6 rounded-full bg-gray-400 hover:bg-red-500/80 text-gray-700 hover:text-white flex items-center justify-center transition-colors"
+                className="absolute top-1 right-1 w-6 h-6 rounded-full bg-gray-400 dark:bg-gray-600 hover:bg-red-500/80 text-gray-700 dark:text-gray-300 hover:text-white flex items-center justify-center transition-colors"
                 aria-label="Remove file"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
@@ -222,8 +222,8 @@ export default function MessageInput({ onSend }) {
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="p-2.5 rounded-lg text-gray-500 hover:bg-gray-200 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-          title="Attach files"
+          className="p-2.5 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-900"
+          title="Attach files (images 5MB, video 20MB, other 50MB)"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
@@ -232,7 +232,7 @@ export default function MessageInput({ onSend }) {
         <button
           type="button"
           onClick={() => folderInputRef.current?.click()}
-          className="p-2.5 rounded-lg text-gray-500 hover:bg-gray-200 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+          className="p-2.5 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-900"
           title="Attach folder"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -250,12 +250,12 @@ export default function MessageInput({ onSend }) {
             }
           }}
           placeholder={selectedFiles.length ? `Send ${selectedFiles.length} file(s)...` : 'Type a message...'}
-          className="flex-1 min-w-0 px-4 py-2.5 rounded-lg bg-gray-200 border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+          className="flex-1 min-w-0 px-4 py-2.5 rounded-lg bg-gray-200 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
         />
         <button
           onClick={handleSend}
           disabled={sending || !canSend}
-          className="px-4 py-2.5 rounded-lg bg-black text-white hover:bg-gray-800 disabled:opacity-50 disabled:pointer-events-none font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+          className="px-4 py-2.5 rounded-lg bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-900"
         >
           {sending ? 'Sending...' : 'Send'}
         </button>
